@@ -103,12 +103,12 @@ const Products = () => {
                     </div>
             }
             <div className='w-full h-10 text-center flex justify-center align-middle mt-1'>
-                <div className='w-1/2 border border-slate-500 flex focus:border-sky-500 shadow-2xl shadow-gray-500 text-lg'>
+                <div className='border border-slate-500 flex focus:border-sky-500 shadow-2xl shadow-gray-500 text-lg'>
                     <input onChange={(e) => { setSearch({ ...search, [e.target.name]: e.target.value }) }} type="search" name="keyword" placeholder='Search' className='flex-1 outline-none border-r border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300' />
                     <button onClick={() => { handleSearch() }} className='px-2 cursor-pointer transition hover:bg-blue-950 active:bg-sky-800'>🔍</button>
                 </div>
             </div>
-            <div className="w-full flex flex-wrap justify-center gap-6 p-4">
+            <div className="w-full flex flex-wrap justify-center gap-6 p-2">
                 {
                     loading ? <div className='loader'></div> :
                         error ? <p>{error}</p> :

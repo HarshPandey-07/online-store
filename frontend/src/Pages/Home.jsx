@@ -160,7 +160,7 @@ const Home = () => {
 					</div>
 			}
 			<div className='w-full h-10 text-center flex justify-center align-middle mt-1'>
-				<div className='w-1/2 flex shadow-2xl shadow-gray-500 text-lg'>
+				<div className='flex shadow-2xl shadow-gray-500 text-lg'>
 					<input onChange={(e) => { setSearch({ ...search, [e.target.name]: e.target.value }) }} type="search" name="keyword" placeholder='Search' className='flex-1 outline-none border border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300 focus:border-sky-500' />
 					<button onClick={() => { handleSearch() }} className='px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800'>🔍</button>
 				</div>
