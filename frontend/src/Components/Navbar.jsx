@@ -4,24 +4,7 @@ import { useAuth } from '../Context/AuthProvider'
 
 const Navbar = ({ setIsSidebarOpen }) => {
 
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      const res = await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-      });
-      if (res.ok) {
-        logout();
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Error: ", error);
-    }
-  }
+  const { user } = useAuth();
 
   return (
     <div className='h-14 w-full z-10 flex bg-[#16171d] border-b border-b-gray-700 p-3 text-lg sticky top-0'>
@@ -53,13 +36,14 @@ const Navbar = ({ setIsSidebarOpen }) => {
         >
           Sign-up
         </NavLink>
-        <div
-          className={
-            `transition-all duration-200 hover:text-sky-400 cursor-default ${user === null ? "hidden" : ""}`
+        <NavLink
+          to="/user/profile"
+          className={({ isActive }) =>
+            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
-          {user?.username}
-        </div>
+          {user?.username}⚙️
+        </NavLink>
         <NavLink
           to="/orders"
           className={({ isActive }) =>
@@ -67,13 +51,6 @@ const Navbar = ({ setIsSidebarOpen }) => {
           }
         >
           Orders
-        </NavLink>
-        <NavLink
-          to="/user"
-          onClick={handleLogout}
-          className={`transition-all duration-200 hover:text-red-400 cursor-pointer ${user === null ? "hidden" : ""}`}
-        >
-          Logout
         </NavLink>
       </div>
     </div>

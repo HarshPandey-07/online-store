@@ -9,11 +9,12 @@ import Orders from './Pages/User/Orders'
 import MainLayout from './Components/MainLayout'
 import AuthLayout from './Components/AuthLayout'
 import { useEffect, useState } from 'react'
-import User from './Pages/User'
+import Dashboard from './Pages/Admin/Dashboard'
 import AuthProvider from './Context/AuthProvider'
 import AddProduct from './Pages/Admin/AddProduct'
 import AdminOrders from './Pages/Admin/Orders'
 import Products from './Pages/Admin/ProductsPage/Products'
+import Profile from './Pages/User/Profile'
 
 function App() {
 
@@ -24,10 +25,11 @@ function App() {
       children: [
         { index: true, element: <Home /> },
         { path: "orders", element: <Orders /> },
-        { path: "user", element: <User /> },
+        { path: "admin/dashboard", element: <Dashboard /> },
         { path: "admin/add-product", element: <AddProduct /> },
         { path: "admin/orders", element: <AdminOrders /> },
-        { path: "admin/products", element: <Products /> }
+        { path: "admin/products", element: <Products /> },
+        { path: "user/profile", element: <Profile /> }
       ]
     },
     {

@@ -32,7 +32,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 				<div className={"text-2xl cursor-default hover:text-sky-400"}>Store</div>
 				<div className='h-0 w-full border-t border-slate-700 my-1'></div>
 				<div className='flex flex-col gap-2 mt-2'>
-					<NavLink to={"/user"} className={({ isActive }) => `transition-all hover:bg-sky-400 hover:text-black active:bg-sky-600 ${isActive ? "text-sky-700" : ""}`}>Dashboard</NavLink>
+					<NavLink to={"/admin/dashboard"} className={({ isActive }) => `transition-all hover:bg-sky-400 hover:text-black active:bg-sky-600 ${isActive ? "text-sky-700" : ""}`}>Dashboard</NavLink>
 					<NavLink to={"/admin/add-product"} className={({ isActive }) => `transition-all hover:bg-sky-400 hover:text-black active:bg-sky-600 ${isActive ? "text-sky-700" : ""}`}>Add product</NavLink>
 					<NavLink to={"/admin/orders"} className={({ isActive }) => `transition-all hover:bg-sky-400 hover:text-black active:bg-sky-600 ${isActive ? "text-sky-700" : ""}`}>Orders</NavLink>
 					<NavLink to={"/admin/products"} className={({ isActive }) => `transition-all hover:bg-sky-400 hover:text-black active:bg-sky-600 ${isActive ? "text-sky-700" : ""}`}>Products</NavLink>

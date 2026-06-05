@@ -83,6 +83,7 @@ public class AuthService {
 
         res.setUsername(userPrincipal.getUsername());
         res.setRole(userPrincipal.getRole().replace("ROLE_", "").toLowerCase());
+        res.setEmail(userPrincipal.getEmail());
         return res;
     }
 

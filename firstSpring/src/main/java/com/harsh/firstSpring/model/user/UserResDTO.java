@@ -6,4 +6,5 @@ import lombok.Data;
 public class UserResDTO {
     private String username;
     private String role;
+    private String email;
 }

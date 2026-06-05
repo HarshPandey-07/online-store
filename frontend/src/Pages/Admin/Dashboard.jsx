@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../Context/AuthProvider';
+import { useAuth } from '../../Context/AuthProvider';
 
-const User = () => {
+const Dashboard = () => {
 
     const [order, setOrder] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
@@ -229,4 +229,4 @@ const User = () => {
     )
 }
 
-export default User
+export default Dashboard
