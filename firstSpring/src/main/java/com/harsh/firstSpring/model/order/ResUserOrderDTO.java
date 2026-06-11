@@ -1,4 +1,4 @@
-package com.harsh.firstSpring.model.user;
+package com.harsh.firstSpring.model.order;
 
 import lombok.Data;
 

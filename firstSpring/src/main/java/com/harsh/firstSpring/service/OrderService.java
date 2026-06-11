@@ -6,7 +6,7 @@ import com.harsh.firstSpring.entity.Product;
 import com.harsh.firstSpring.entity.User;
 import com.harsh.firstSpring.model.*;
 import com.harsh.firstSpring.model.order.*;
-import com.harsh.firstSpring.model.user.ResUserOrderDTO;
+import com.harsh.firstSpring.model.order.ResUserOrderDTO;
 import com.harsh.firstSpring.model.user.UserPrincipal;
 import com.harsh.firstSpring.repository.OrderRepo;
 import com.harsh.firstSpring.repository.ProductRepo;
@@ -196,5 +196,45 @@ public class OrderService {
         });
 
         return "Order canceled";
+    }
+
+    @Transactional
+    public ResOrderDTO getUserLastOrder(UserPrincipal userPrincipal) {
+        Integer userId = userPrincipal.getUser().getId();
+        Order order = orderRepo.findTopByUserIdOrderByCreatedAtDesc(userId)
+                .orElseThrow(()->new RuntimeException("Order not found"));
+
+        ResUserOrderDTO userDto = new ResUserOrderDTO();
+        userDto.setUsername(order.getUser().getUsername());
+
+        ResOrderDTO dto = new ResOrderDTO();
+
+        dto.setId(order.getId());
+        dto.setUser(userDto);
+        dto.setTotalPrice(order.getTotalPrice());
+        dto.setCreatedAt(order.getCreatedAt());
+        dto.setStatus(order.getStatus());
+
+        List<ResOrderItemDTO> itemDTOList = new ArrayList<>();
+
+        for(OrderItem item : order.getItems()) {
+            ResOrderItemDTO orderItemDTO = new ResOrderItemDTO();
+
+            orderItemDTO.setId(item.getId());
+
+            OrderProductDTO productDTO = new OrderProductDTO();
+
+            productDTO.setName(item.getProduct().getName());
+            orderItemDTO.setProduct(productDTO);
+
+            orderItemDTO.setQuantity(item.getQuantity());
+            orderItemDTO.setPriceAtPurchased(item.getPriceAtPurchase());
+
+            itemDTOList.add(orderItemDTO);
+        }
+
+        dto.setOrderItems(itemDTOList);
+
+        return dto;
     }
 }

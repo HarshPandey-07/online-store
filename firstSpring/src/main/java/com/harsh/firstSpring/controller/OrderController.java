@@ -53,4 +53,9 @@ public class OrderController {
     public String cancelOrder(@PathVariable Integer id) {
         return orderService.cancelOrder(id);
     }
+
+    @GetMapping("/user/last-order")
+    public ResOrderDTO getLastOrder(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return orderService.getUserLastOrder(userPrincipal);
+    }
 }

@@ -1,6 +1,5 @@
 package com.harsh.firstSpring.model.order;
 
-import com.harsh.firstSpring.model.user.ResUserOrderDTO;
 import lombok.Data;
 
 import java.math.BigDecimal;

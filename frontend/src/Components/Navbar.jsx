@@ -19,7 +19,15 @@ const Navbar = ({ setIsSidebarOpen }) => {
         </div>
         <NavLink to={"/"} className="transition-all text-xl duration-200 hover:text-slate-400 cursor-pointer">Store</NavLink>
       </div>
-      <div className='flex gap-8 ml-auto'>
+      <div className='flex gap-4 ml-auto'>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${isActive ? "text-sky-400" : ""}`
+          }
+        >
+          Home🏡
+        </NavLink>
         <NavLink
           to="/login"
           className={({ isActive }) =>

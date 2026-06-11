@@ -7,7 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Integer> {
     Page<Order> findAllByUser(User user, Pageable pageable);
+    Optional<Order> findTopByUserIdOrderByCreatedAtDesc(Integer user);
 }

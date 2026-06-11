@@ -4,6 +4,10 @@ Online store application with separate frontend and backend.
 ### TODO 📋
 * Integrate the change role feature into the frontend
 
+### Note ⚠️
+* The edit feature of the user profile is not completed
+* The dashboard for the admin is to be completely revamped
+
 ## Features 💻
 
 ### User 👤
