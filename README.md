@@ -6,7 +6,7 @@ Online store application with separate frontend and backend.
 
 ### Note ⚠️
 * The edit feature of the user profile is not completed
-* Little work remaining for the admin dashboard
+* The admin dashboard is still under development
 
 ## Features 💻
 
