@@ -1,5 +1,6 @@
 package com.harsh.firstSpring.entity;
 
+import com.harsh.firstSpring.util.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -24,7 +25,8 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;

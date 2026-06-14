@@ -1,5 +1,6 @@
 package com.harsh.firstSpring.model.order;
 
+import com.harsh.firstSpring.util.OrderStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,6 +13,6 @@ public class ResOrderDTO {
     private ResUserOrderDTO user;
     private BigDecimal totalPrice;
     private LocalDateTime createdAt;
-    private String status;
+    private OrderStatus status;
     private List<ResOrderItemDTO> orderItems;
 }

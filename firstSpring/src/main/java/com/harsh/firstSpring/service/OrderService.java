@@ -4,15 +4,18 @@ import com.harsh.firstSpring.entity.Order;
 import com.harsh.firstSpring.entity.OrderItem;
 import com.harsh.firstSpring.entity.Product;
 import com.harsh.firstSpring.entity.User;
+import com.harsh.firstSpring.mapping.OrderMapper;
 import com.harsh.firstSpring.model.*;
 import com.harsh.firstSpring.model.order.*;
 import com.harsh.firstSpring.model.order.ResUserOrderDTO;
 import com.harsh.firstSpring.model.user.UserPrincipal;
 import com.harsh.firstSpring.repository.OrderRepo;
 import com.harsh.firstSpring.repository.ProductRepo;
+import com.harsh.firstSpring.util.OrderStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,10 +26,12 @@ import java.util.List;
 public class OrderService {
     private final OrderRepo orderRepo;
     private final ProductRepo productRepo;
+    private final OrderMapper mapper;
 
-    OrderService(OrderRepo orderRepo, ProductRepo productRepo) {
+    OrderService(OrderRepo orderRepo, ProductRepo productRepo, OrderMapper mapper) {
         this.orderRepo = orderRepo;
         this.productRepo = productRepo;
+        this.mapper = mapper;
     }
 
     @Transactional
@@ -53,7 +58,7 @@ public class OrderService {
             orderItems.add(item);
         }
 
-        order.setStatus("PLACED");
+        order.setStatus(OrderStatus.PENDING);
         order.setItems(orderItems);
         order.setTotalPrice(orderItems.stream()
                 .map(item -> item.getPriceAtPurchase()
@@ -68,47 +73,11 @@ public class OrderService {
     public PageResponse<ResOrderDTO> getOrders(UserPrincipal reqUser, int page, int size) {
         User user = reqUser.getUser();
         PageRequest pageable = PageRequest.of(page, size);
-        Page<Order> entity = orderRepo.findAllByUser(user, pageable);
-        List<ResOrderDTO> orders = new ArrayList<>();
+        Page<Order> order = orderRepo.findAllByUser(user, pageable);
+        List<ResOrderDTO> orderList = new ArrayList<>();
         PageResponse<ResOrderDTO> pageDTO = new PageResponse<>();
-
-        for(Order order: entity) {
-            ResOrderDTO dto = new ResOrderDTO();
-            ResUserOrderDTO userDTO = new ResUserOrderDTO();
-            List<ResOrderItemDTO> resOrderItemList = new ArrayList<>();
-
-            userDTO.setUsername(user.getUsername());
-            dto.setId(order.getId());
-            dto.setUser(userDTO);
-            dto.setCreatedAt(order.getCreatedAt());
-            dto.setStatus(order.getStatus());
-            dto.setTotalPrice(order.getTotalPrice());
-
-            for(OrderItem items: order.getItems()) {
-                ResOrderItemDTO orderItems = new ResOrderItemDTO();
-                Product product = items.getProduct();
-
-                OrderProductDTO productDto = new OrderProductDTO();
-                productDto.setName(product.getName());
-
-                orderItems.setId(items.getId());
-                orderItems.setPriceAtPurchased(items.getPriceAtPurchase());
-                orderItems.setProduct(productDto);
-                orderItems.setQuantity(items.getQuantity());
-
-                resOrderItemList.add(orderItems);
-            }
-
-            dto.setOrderItems(resOrderItemList);
-            orders.add(dto);
-        }
-
-        pageDTO.setContent(orders);
-        pageDTO.setPage(entity.getNumber());
-        pageDTO.setSize(entity.getSize());
-        pageDTO.setTotalElements(entity.getTotalElements());
-        pageDTO.setTotalPages(entity.getTotalPages());
-        return pageDTO;
+        
+        return mapper.toPageDto(order, orderList);
     }
 
     @Transactional
@@ -131,54 +100,17 @@ public class OrderService {
 
     public PageResponse<ResOrderDTO> getOrdersAdmin(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
-        Page<Order> entity = orderRepo.findAll(pageable);
-        List<ResOrderDTO> orders = new ArrayList<>();
-        PageResponse<ResOrderDTO> pageDTO = new PageResponse<>();
+        Page<Order> order = orderRepo.findAll(pageable);
+        List<ResOrderDTO> orderList = new ArrayList<>();
 
-        for(Order order: entity) {
-            ResOrderDTO dto = new ResOrderDTO();
-            ResUserOrderDTO userDTO = new ResUserOrderDTO();
-            List<ResOrderItemDTO> resOrderItemList = new ArrayList<>();
-
-            userDTO.setUsername(order.getUser().getUsername());
-            dto.setId(order.getId());
-            dto.setUser(userDTO);
-            dto.setCreatedAt(order.getCreatedAt());
-            dto.setStatus(order.getStatus());
-            dto.setTotalPrice(order.getTotalPrice());
-
-            for(OrderItem items: order.getItems()) {
-                ResOrderItemDTO orderItems = new ResOrderItemDTO();
-                Product product = items.getProduct();
-
-                OrderProductDTO productDto = new OrderProductDTO();
-                productDto.setName(product.getName());
-
-                orderItems.setId(items.getId());
-                orderItems.setPriceAtPurchased(items.getPriceAtPurchase());
-                orderItems.setProduct(productDto);
-                orderItems.setQuantity(items.getQuantity());
-
-                resOrderItemList.add(orderItems);
-            }
-
-            dto.setOrderItems(resOrderItemList);
-            orders.add(dto);
-        }
-        pageDTO.setContent(orders);
-        pageDTO.setPage(entity.getNumber());
-        pageDTO.setSize(entity.getSize());
-        pageDTO.setTotalElements(entity.getTotalElements());
-        pageDTO.setTotalPages(entity.getTotalPages());
-
-        return pageDTO;
+        return mapper.toPageDto(order, orderList);
     }
 
     @Transactional
     public String completeOrder(int orderId) {
         orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Cannot find the order"))
-                .setStatus("DELIVERED");
+                .setStatus(OrderStatus.DELIVERED);
 
         return "Order delivered successfully";
     }
@@ -188,7 +120,7 @@ public class OrderService {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Cannot find the order"));
 
-        order.setStatus("CANCELED");
+        order.setStatus(OrderStatus.CANCELED);
         order.getItems().forEach(item -> {
             Product product = item.getProduct();
 
@@ -237,4 +169,25 @@ public class OrderService {
 
         return dto;
     }
+
+    @Transactional
+    public PageResponse<ResOrderDTO> getAdminLastOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Order> order = orderRepo.findAllByOrderByCreatedAtDesc(pageable);
+        List<ResOrderDTO> orderList = new ArrayList<>();
+        
+        return mapper.toPageDto(order, orderList);
+    }
+
+    public OrderStats orderStats() {
+        OrderStats stats = new OrderStats();
+
+        stats.setOrders(orderRepo.count());
+        stats.setOrdersPending(orderRepo.countByStatus(OrderStatus.PENDING));
+        stats.setOrdersDelivered(orderRepo.countByStatus(OrderStatus.DELIVERED));
+        stats.setOrdersCanceled(orderRepo.countByStatus(OrderStatus.CANCELED));
+
+        return stats;
+    }
+
 }

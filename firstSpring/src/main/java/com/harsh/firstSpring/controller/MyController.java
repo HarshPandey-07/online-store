@@ -57,4 +57,9 @@ public class MyController {
 		return productService.searchItems(keyword);
 	}
 
+	@GetMapping("/admin/total-product")
+	public Long totalProducts() {
+		return productService.totalProducts();
+	}
+
 }

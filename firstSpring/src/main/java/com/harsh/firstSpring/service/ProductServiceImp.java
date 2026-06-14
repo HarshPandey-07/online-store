@@ -114,4 +114,9 @@ public class ProductServiceImp implements ProductService {
                 .toList();
     }
 
+    @Override
+    public Long totalProducts() {
+        return productRepo.count();
+    }
+
 }

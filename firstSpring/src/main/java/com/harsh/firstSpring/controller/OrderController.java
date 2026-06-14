@@ -1,6 +1,7 @@
 package com.harsh.firstSpring.controller;
 
 import com.harsh.firstSpring.model.PageResponse;
+import com.harsh.firstSpring.model.order.OrderStats;
 import com.harsh.firstSpring.model.order.ReqOrderDTO;
 import com.harsh.firstSpring.model.order.ResOrderDTO;
 import com.harsh.firstSpring.model.user.UserPrincipal;
@@ -57,5 +58,18 @@ public class OrderController {
     @GetMapping("/user/last-order")
     public ResOrderDTO getLastOrder(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         return orderService.getUserLastOrder(userPrincipal);
+    }
+
+    @GetMapping("/admin/order/stats")
+    public OrderStats orderStats() {
+        return orderService.orderStats();
+    }
+
+    @GetMapping("/admin/last-order")
+    public PageResponse<ResOrderDTO> getAdminLastOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return orderService.getAdminLastOrders(page, size);
     }
 }

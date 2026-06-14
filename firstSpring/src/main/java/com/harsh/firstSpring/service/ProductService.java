@@ -17,4 +17,5 @@ public interface ProductService {
     ResponseProductDTO updateProduct(int id, RequestProductDTO product);
     String refillStocks(int id, int stocks);
     List<ResponseProductDTO> searchItems(String keyword);
+    Long totalProducts();
 }
