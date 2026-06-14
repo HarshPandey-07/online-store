@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { formatINR } from '../../utils/formatters';
 
 const Orders = () => {
 
@@ -125,13 +126,13 @@ const Orders = () => {
                           <div key={i.id} className='flex justify-center align-middle text-center gap-2'>
                             <p className='text-xl tracking-wider'>{i.product.name}</p>
                             <p className='text-slate-300 text-sm tracking-tighter'>{i.quantity}</p>
-                            <p className='text-slate-300 text-sm tracking-tighter'>₹{i.priceAtPurchased}</p>
+                            <p className='text-slate-300 text-sm tracking-tighter'>{formatINR(i.priceAtPurchased)}</p>
                           </div>
                         ))
                       }
                     </div>
                     <div className='text-right text-lg text-slate-300'>
-                      <p>Total price - ₹{item.totalPrice}</p>
+                      <p>Total price - {formatINR(item.totalPrice)}</p>
                       <p>Status - {item.status}</p>
                     </div>
                     <div className='text-sm text-slate-300'>

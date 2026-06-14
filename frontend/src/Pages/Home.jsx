@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthProvider';
+import { formatINR } from '../utils/formatters';
 
 const Home = () => {
 
@@ -122,7 +123,7 @@ const Home = () => {
 		setProductDetails({
 			id: product.id,
 			name: product.name,
-			price: quantity * product.price,
+			price: formatINR(quantity * product.price),
 			quantity: quantity
 		});
 
@@ -177,7 +178,7 @@ const Home = () => {
 										>
 											<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
 											<p className="text-sm text-gray-300">{product?.description}</p>
-											<p className='font-light'>₹{product?.price}</p>
+											<p className='font-light'>{formatINR(product?.price)}</p>
 											<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
 											<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p>
 											<div className="flex items-center gap-2 mb-2">
@@ -236,7 +237,7 @@ const Home = () => {
 										>
 											<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
 											<p className="text-sm text-gray-300">{product?.description}</p>
-											<p className='font-light'>₹{product?.price}</p>
+											<p className='font-light'>{formatINR(product?.price)}</p>
 											<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
 											<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p>
 											<div className="flex items-center gap-2 mb-2">
@@ -327,7 +328,7 @@ const Home = () => {
 											</strong>{" "}
 											for{" "}
 											<strong className="text-white">
-												₹{productDetails?.price}
+												{productDetails?.price}
 											</strong>
 										</p>
 

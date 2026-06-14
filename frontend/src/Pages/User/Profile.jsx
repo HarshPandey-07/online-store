@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../Context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { formatINR } from '../../utils/formatters';
 
 const Profile = () => {
 
@@ -71,7 +72,7 @@ const Profile = () => {
     }
 
     return (
-        <div className='h-[calc(100dvh-86px)] md:mx-12 border-x border-x-slate-700 flex justify-center align-middle'>
+        <div className='md:h-[calc(100dvh-86px)] md:mx-12 border-x border-x-slate-700 flex justify-center align-middle'>
             <div className='md:flex flex-2'>
                 <div className='p-4 flex-1 bg-[#16171d]'>
                     <div className='flex justify-between align-middle h-1/2 flex-col'>
@@ -106,7 +107,7 @@ const Profile = () => {
                             order.length === 0
                                 ? <i>No orders yet!</i>
                                 :
-                                <div key={order.id} className='h-fit min-w-54 bg-slate-700 text-white rounded-xl shadow-lg p-2 space-y-2'>
+                                <div className='h-fit min-w-54 bg-slate-700 text-white rounded-xl shadow-lg p-2 space-y-2'>
                                     <div className='flex justify-between align-middle'>
                                         <p className='text-slate-400 text-xs tracking-tight'>ID:{order.id}</p>
                                     </div>
@@ -117,13 +118,13 @@ const Profile = () => {
                                                 <div key={i.id} className='flex justify-center align-middle text-center gap-2'>
                                                     <p className='text-lg tracking-wider'>{i.product.name}</p>
                                                     <p className='text-slate-300 text-sm tracking-tighter'>{i.quantity}</p>
-                                                    <p className='text-slate-300 text-sm tracking-tighter'>₹{i.priceAtPurchased}</p>
+                                                    <p className='text-slate-300 text-sm tracking-tighter'>{formatINR(i.priceAtPurchased)}</p>
                                                 </div>
                                             ))
                                         }
                                     </div>
                                     <div className='text-right text-slate-300'>
-                                        <p>Total price - ₹{order.totalPrice}</p>
+                                        <p>Total price - {formatINR(order.totalPrice)}</p>
                                         <p>Status - {order.status}</p>
                                     </div>
                                     <div className='flex justify-between'>
