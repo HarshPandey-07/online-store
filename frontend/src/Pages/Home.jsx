@@ -223,7 +223,7 @@ const Home = () => {
 													+
 												</button>
 											</div>
-											<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-green-500 rounded cursor-pointer active:bg-green-600 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
+											<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
 												{disable ? "Processing...." : "Place order"}
 											</button>
 										</div>
@@ -282,7 +282,7 @@ const Home = () => {
 													+
 												</button>
 											</div>
-											<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-green-500 rounded cursor-pointer active:bg-green-600 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
+											<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
 												{disable ? "Processing...." : "Place order"}
 											</button>
 										</div>

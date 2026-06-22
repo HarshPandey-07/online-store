@@ -20,9 +20,9 @@ const Dashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
-    const fetchAdminOrder = async () => {
+    const fetchAdminLastOrder = async () => {
         try {
-            const res = await fetch(`/api/admin/order?page=${page}&size=3`, {
+            const res = await fetch(`/api/admin/last-order`, {
                 credentials: 'include'
             });
             if (!res.ok) {
@@ -38,21 +38,10 @@ const Dashboard = () => {
             });
 
             setIsCompleted(orderState);
-            setPageInfo({
-                page: data.page,
-                size: data.size,
-                totalElements: data.totalElements,
-                totalPages: data.totalPages
-            })
         } catch (error) {
             console.log("Something went wrong: ", error);
         }
     };
-
-    // Remove this and shift the function call to the last useEffect(); After the revamp of the orders section
-    useEffect(() => {
-        fetchAdminOrder();
-    }, [page]);
 
     const handleLogout = async () => {
         try {
@@ -103,7 +92,7 @@ const Dashboard = () => {
                 ...prev,
                 [id]: true
             }));
-            fetchAdminOrder();
+            fetchAdminLastOrder();
         } catch (error) {
             console.log("Something went wrong: ", error);
             setIsCompleted(prev => ({
@@ -132,7 +121,7 @@ const Dashboard = () => {
                 ...prev,
                 [id]: true
             }));
-            fetchAdminOrder();
+            fetchAdminLastOrder();
         } catch (error) {
             console.log("Something went wrong: ", error);
             setIsCompleted(prev => ({
@@ -173,6 +162,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         loadStats();
+        fetchAdminLastOrder();
     }, [])
 
 
@@ -247,11 +237,7 @@ const Dashboard = () => {
                     <p className='text-xl'>Admin panel</p>
                     <p className='text-slate-400 text-sm mb-2'>Controls</p>
                     <div className='h-0 w-full border-t border-slate-700 my-4'></div>
-                    <p className='text-lg text-slate-300'>View orders</p>
-                    <div className='space-x-8'>
-                        <button onClick={pageBackward} className={`h-fit w-fit tracking-wider text-blue-500 cursor-pointer hover:underline ${page === 0 ? "hidden" : ""}`}>Previous</button>
-                        <button onClick={pageForward} className={`h-fit w-fit tracking-wider text-blue-500 cursor-pointer hover:underline ${pageInfo.totalPages === page + 1 ? "hidden" : ""}`}>Next</button>
-                    </div>
+                    <p className='text-lg text-slate-300'>Last orders</p>
                     <div className='h-0 w-full border-t border-slate-700 my-4'></div>
                     <div className='flex justify-evenly align-middle gap-4 relative overflow-x-auto pb-1'>
                         {
@@ -291,6 +277,9 @@ const Dashboard = () => {
                                     </div>
                                 ))
                         }
+                    </div>
+                    <div className='mt-2'>
+                        <NavLink to={"/admin/orders"} className={"text-xl text-blue-500 hover:underline"}>Orders</NavLink>
                     </div>
                 </div>
             </div>
