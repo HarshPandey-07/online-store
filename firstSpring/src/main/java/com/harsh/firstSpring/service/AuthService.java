@@ -1,10 +1,7 @@
 package com.harsh.firstSpring.service;
 
 import com.harsh.firstSpring.model.*;
-import com.harsh.firstSpring.model.user.UserDTO;
-import com.harsh.firstSpring.model.user.UserPrincipal;
-import com.harsh.firstSpring.model.user.UserResDTO;
-import com.harsh.firstSpring.model.user.UserUpdateDTO;
+import com.harsh.firstSpring.model.user.*;
 import com.harsh.firstSpring.model.user.update.ChangeEmailDTO;
 import com.harsh.firstSpring.model.user.update.ChangePasswordDTO;
 import com.harsh.firstSpring.model.user.update.ChangeUsernameDTO;
@@ -52,7 +49,7 @@ public class AuthService {
         entity.setUsername(dto.getUsername());
         entity.setPassword(password);
         entity.setEmail(dto.getEmail());
-        entity.setRoles(role);
+        entity.setRole(role);
 
         userRepo.save(entity);
         return "Sign successful!";
@@ -97,7 +94,7 @@ public class AuthService {
         Role role = roleRepo.findById(userDTO.getRoleId())
                 .orElseThrow(() -> new RuntimeException("Cannot find role!"));
 
-        user.setRoles(role);
+        user.setRole(role);
         return "Role updated!";
     }
 
@@ -134,5 +131,15 @@ public class AuthService {
         entity.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 
         return "Password changed!"; // Automatically updated user, because of @Transactional
+    }
+
+    public UserStats userStats() {
+        UserStats stats = new UserStats();
+
+        stats.setTotalUser(userRepo.count());
+        stats.setAdmin(userRepo.countByRole_Name("ROLE_ADMIN"));
+        stats.setUser(userRepo.countByRole_Name("ROLE_USER"));
+
+        return stats;
     }
 }

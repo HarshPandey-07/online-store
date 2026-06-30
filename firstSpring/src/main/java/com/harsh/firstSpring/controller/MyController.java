@@ -1,6 +1,7 @@
 package com.harsh.firstSpring.controller;
 
 import com.harsh.firstSpring.model.PageResponse;
+import com.harsh.firstSpring.model.product.ProductStats;
 import org.springframework.web.bind.annotation.*;
 
 import com.harsh.firstSpring.model.product.RequestProductDTO;
@@ -57,9 +58,9 @@ public class MyController {
 		return productService.searchItems(keyword);
 	}
 
-	@GetMapping("/admin/total-product")
-	public Long totalProducts() {
-		return productService.totalProducts();
+	@GetMapping("/admin/product/stats")
+	public ProductStats productStats() {
+		return productService.productStats();
 	}
 
 }

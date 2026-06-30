@@ -10,12 +10,23 @@ const Dashboard = () => {
     const [page, setPage] = useState(0);
     const [isCompleted, setIsCompleted] = useState({});
 
-    const [stats, setStats] = useState({
+    const [orderStats, setOrderStats] = useState({
         orders: 0,
         ordersPending: 0,
         ordersDelivered: 0,
         ordersCanceled: 0
-    })
+    });
+
+    const [productStats, setProductStats] = useState({
+        products: 0,
+        categories: 0
+    });
+
+    const [userStats, setUserStats] = useState({
+        totalUser: 0,
+        admin: 0,
+        user: 0
+    });
 
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -154,7 +165,39 @@ const Dashboard = () => {
             }
 
             const data = await res.json();
-            setStats(data);
+            setOrderStats(data);
+        } catch (error) {
+            console.log("Something went wrong: ", error);
+        }
+
+        try {
+            const res = await fetch("/api/admin/product/stats", {
+                credentials: 'include'
+            });
+
+            if (!res.ok) {
+                console.log("Something went wrong: ", res.statusText);
+                return;
+            }
+
+            const data = await res.json();
+            setProductStats(data);
+        } catch (error) {
+            console.log("Something went wrong: ", error);
+        }
+
+        try {
+            const res = await fetch("/api/auth/admin/stats", {
+                credentials: 'include'
+            });
+
+            if (!res.ok) {
+                console.log("Something went wrong: ", res.statusText);
+                return;
+            }
+
+            const data = await res.json();
+            setUserStats(data);
         } catch (error) {
             console.log("Something went wrong: ", error);
         }
@@ -182,31 +225,31 @@ const Dashboard = () => {
                             <div className='p-4 border-y border-slate-700'>
                                 <div className='bg-emerald-600 md:py-2 text-center rounded'>
                                     <p className='text-lg tracking-wider'>Products</p>
-                                    <p className='text-sm text-slate-500'>Developing...</p>
+                                    <p className='text-2xl font-bold'>{formatNumber(productStats.products)}</p>
                                     <p className='text-2xl font-bold'></p>
                                 </div>
                                 <div className='mt-2 text-center rounded'>
                                     <p className='text-sm text-slate-400 tracking-wider'>Categories</p>
-                                    <p className='text-sm text-slate-600'>Developing...</p>
+                                    <p className='text-lg font-bold'>{formatNumber(productStats.categories)}</p>
                                     <p className='text-lg font-bold'></p>
                                 </div>
                                 <div className='border-t border-slate-700 my-2'></div>
                                 <div className='bg-amber-600 md:py-2 text-center rounded'>
                                     <p className='text-lg tracking-wider'>Users</p>
-                                    <p className='text-sm text-slate-500'>Developing...</p>
+                                    <p className='text-2xl font-bold'>{formatNumber(userStats.totalUser)}</p>
                                     <p className='text-2xl font-bold'></p>
                                 </div>
                                 <div className='flex justify-center mt-2 gap-2 text-center'>
                                     <div>
                                         <p className='text-sm text-slate-400 tracking-wider'>Admins</p>
-                                        <p className='text-sm text-slate-600'>Developing...</p>
+                                        <p className='text-lg font-bold'>{formatNumber(userStats.admin)}</p>
                                         <p className='text-lg font-bold'></p>
                                     </div>
 
                                     <div className='border-r border-slate-700 mx-2'></div>
                                     <div>
                                         <p className='text-sm text-slate-400 tracking-wider'>Users</p>
-                                        <p className='text-sm text-slate-600'>Developing...</p>
+                                        <p className='text-lg font-bold'>{formatNumber(userStats.user)}</p>
                                         <p className='text-lg font-bold'></p>
                                     </div>
                                 </div>
@@ -214,19 +257,19 @@ const Dashboard = () => {
                             <div className='md:w-52 p-4 border-x border-slate-700'>
                                 <div className='bg-blue-600 md:w-44 py-2 text-center rounded'>
                                     <p className='text-lg tracking-wider'>Orders</p>
-                                    <p className='text-2xl font-bold'>{formatNumber(stats.orders)}</p>
+                                    <p className='text-2xl font-bold'>{formatNumber(orderStats.orders)}</p>
                                 </div>
                                 <div className='flex flex-col mt-2 gap-2 text-center'>
                                     <p className='text-sm text-slate-400 tracking-wider'>Pending</p>
-                                    <p className='text-lg font-bold'>{formatNumber(stats.ordersPending)}</p>
+                                    <p className='text-lg font-bold'>{formatNumber(orderStats.ordersPending)}</p>
                                     <div className='border-t border-slate-700 mb-2'></div>
 
                                     <p className='text-sm text-slate-400 tracking-wider'>Delivered</p>
-                                    <p className='text-lg font-bold'>{formatNumber(stats.ordersDelivered)}</p>
+                                    <p className='text-lg font-bold'>{formatNumber(orderStats.ordersDelivered)}</p>
                                     <div className='border-t border-slate-700 mb-2'></div>
 
                                     <p className='text-sm text-slate-400 tracking-wider'>Canceled</p>
-                                    <p className='text-lg font-bold'>{formatNumber(stats.ordersCanceled)}</p>
+                                    <p className='text-lg font-bold'>{formatNumber(orderStats.ordersCanceled)}</p>
 
                                 </div>
                             </div>

@@ -1,10 +1,7 @@
 package com.harsh.firstSpring.controller;
 
 import com.harsh.firstSpring.model.*;
-import com.harsh.firstSpring.model.user.UserDTO;
-import com.harsh.firstSpring.model.user.UserPrincipal;
-import com.harsh.firstSpring.model.user.UserResDTO;
-import com.harsh.firstSpring.model.user.UserUpdateDTO;
+import com.harsh.firstSpring.model.user.*;
 import com.harsh.firstSpring.model.user.update.ChangeEmailDTO;
 import com.harsh.firstSpring.model.user.update.ChangePasswordDTO;
 import com.harsh.firstSpring.model.user.update.ChangeUsernameDTO;
@@ -56,5 +53,10 @@ public class AuthController {
     @PostMapping("/user/change-password")
     public String updatePassword(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody ChangePasswordDTO dto) {
         return authService.changePassword(userPrincipal, dto);
+    }
+
+    @GetMapping("/admin/stats")
+    public UserStats userStats() {
+        return authService.userStats();
     }
 }

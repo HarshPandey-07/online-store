@@ -1,6 +1,7 @@
 package com.harsh.firstSpring.service;
 
 import com.harsh.firstSpring.model.PageResponse;
+import com.harsh.firstSpring.model.product.ProductStats;
 import com.harsh.firstSpring.repository.OrderItemRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -115,8 +116,13 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Long totalProducts() {
-        return productRepo.count();
+    public ProductStats productStats() {
+        ProductStats stats = new ProductStats();
+
+        stats.setProducts(productRepo.count());
+        stats.setCategories(categoryRepo.count());
+
+        return stats;
     }
 
 }

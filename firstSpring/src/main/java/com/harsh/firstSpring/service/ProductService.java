@@ -1,6 +1,7 @@
 package com.harsh.firstSpring.service;
 
 import com.harsh.firstSpring.model.PageResponse;
+import com.harsh.firstSpring.model.product.ProductStats;
 import org.springframework.stereotype.Service;
 
 import com.harsh.firstSpring.model.product.RequestProductDTO;
@@ -17,5 +18,5 @@ public interface ProductService {
     ResponseProductDTO updateProduct(int id, RequestProductDTO product);
     String refillStocks(int id, int stocks);
     List<ResponseProductDTO> searchItems(String keyword);
-    Long totalProducts();
+    ProductStats productStats();
 }
