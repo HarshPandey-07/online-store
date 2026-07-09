@@ -1,5 +1,6 @@
 package com.harsh.firstSpring.controller;
 
+import com.harsh.firstSpring.entity.Order;
 import com.harsh.firstSpring.model.PageResponse;
 import com.harsh.firstSpring.model.order.OrderStats;
 import com.harsh.firstSpring.model.order.ReqOrderDTO;
@@ -19,7 +20,7 @@ public class OrderController {
     }
 
     @GetMapping("/admin/order")
-    public PageResponse<ResOrderDTO>  getOrderAdmin(
+    public PageResponse<ResOrderDTO> getOrderAdmin(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -27,8 +28,16 @@ public class OrderController {
     }
 
     @PostMapping("/user/order")
-    public String setOrder(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody ReqOrderDTO orderDTO) {
-        return orderService.createOrder(userPrincipal, orderDTO);
+    public ResOrderDTO placeOrderDirect(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody ReqOrderDTO orderDTO
+    ) {
+        return orderService.placeOrderDirect(userPrincipal, orderDTO);
+    }
+
+    @PostMapping("/user/order/cart")
+    public ResOrderDTO placeOrderFromCart(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return orderService.placeOrderFromCart(userPrincipal);
     }
 
     @GetMapping("/user/order")
@@ -41,7 +50,10 @@ public class OrderController {
     }
 
     @DeleteMapping("/user/order/{id}")
-    public String removeOrder(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Integer id) {
+    public String removeOrder(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Integer id
+    ) {
         return orderService.removeOrder(userPrincipal, id);
     }
 

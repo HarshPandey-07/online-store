@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class ResOrderItemDTO {
     private Integer id;
-    private OrderProductDTO product;
+    private String product;
     private Integer quantity;
     private BigDecimal priceAtPurchased;
 }

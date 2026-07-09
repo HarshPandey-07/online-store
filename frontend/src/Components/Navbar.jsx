@@ -58,6 +58,14 @@ const Navbar = ({ setIsSidebarOpen }) => {
             `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
+          Cart🛒
+        </NavLink>
+        <NavLink
+          to="/orders"
+          className={({ isActive }) =>
+            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
+          }
+        >
           Orders📦
         </NavLink>
       </div>

@@ -116,7 +116,7 @@ const Profile = () => {
                                         {
                                             order.orderItems.map(i => (
                                                 <div key={i.id} className='flex justify-center align-middle text-center gap-2'>
-                                                    <p className='text-lg tracking-wider'>{i.product.name}</p>
+                                                    <p className='text-lg tracking-wider'>{i.product}</p>
                                                     <p className='text-slate-300 text-sm tracking-tighter'>{i.quantity}</p>
                                                     <p className='text-slate-300 text-sm tracking-tighter'>{formatINR(i.priceAtPurchased)}</p>
                                                 </div>

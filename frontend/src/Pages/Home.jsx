@@ -122,7 +122,7 @@ const Home = () => {
 
 		setProductDetails({
 			id: product.id,
-			name: product.name,
+			name: product,
 			price: formatINR(quantity * product.price),
 			quantity: quantity
 		});
@@ -170,64 +170,64 @@ const Home = () => {
 				{
 					loading ? <div className='loader'></div> :
 						error ? <p>{error}</p> :
-								results.length !== 0 ?
-									results.map(product => (
-										<div
-											key={product?.id}
-											className="h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
-										>
-											<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
-											<p className="text-sm text-gray-300">{product?.description}</p>
-											<p className='font-light'>{formatINR(product?.price)}</p>
-											<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
-											<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p>
-											<div className="flex items-center gap-2 mb-2">
-												<button
-													onClick={() =>
-														updateQuantity(
-															product.id,
-															quantities[product.id] - 1,
-															product.stock
-														)
-													}
-													className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-												>
-													-
-												</button>
+							results.length !== 0 ?
+								results.map(product => (
+									<div
+										key={product?.id}
+										className="h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
+									>
+										<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
+										<p className="text-sm text-gray-300">{product?.description}</p>
+										<p className='font-light'>{formatINR(product?.price)}</p>
+										<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
+										<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p>
+										<div className="flex items-center gap-2 mb-2">
+											<button
+												onClick={() =>
+													updateQuantity(
+														product.id,
+														quantities[product.id] - 1,
+														product.stock
+													)
+												}
+												className="bg-slate-600 px-3 rounded hover:bg-slate-500"
+											>
+												-
+											</button>
 
-												<input
-													type="number"
-													value={quantities[product.id] || 1}
-													min={1}
-													max={product.stock}
-													onChange={(e) =>
-														updateQuantity(
-															product.id,
-															e.target.value,
-															product.stock
-														)
-													}
-													className="w-16 text-center bg-slate-800 rounded outline-none no-spinner"
-												/>
+											<input
+												type="number"
+												value={quantities[product.id] || 1}
+												min={1}
+												max={product.stock}
+												onChange={(e) =>
+													updateQuantity(
+														product.id,
+														e.target.value,
+														product.stock
+													)
+												}
+												className="w-16 text-center bg-slate-800 rounded outline-none no-spinner"
+											/>
 
-												<button
-													onClick={() =>
-														updateQuantity(
-															product.id,
-															quantities[product.id] + 1,
-															product.stock
-														)
-													}
-													className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-												>
-													+
-												</button>
-											</div>
-											<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
-												{disable ? "Processing...." : "Place order"}
+											<button
+												onClick={() =>
+													updateQuantity(
+														product.id,
+														quantities[product.id] + 1,
+														product.stock
+													)
+												}
+												className="bg-slate-600 px-3 rounded hover:bg-slate-500"
+											>
+												+
 											</button>
 										</div>
-									))
+										<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
+											{disable ? "Processing...." : "Place order"}
+										</button>
+									</div>
+								))
 								:
 								products.length === 0 ? <i>No products yet!</i> :
 									products.map(product => (
