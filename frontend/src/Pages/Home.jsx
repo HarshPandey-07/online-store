@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthProvider';
 import { formatINR } from '../utils/formatters';
+import { LuSearch } from "react-icons/lu";
 
 const Home = () => {
 
@@ -122,7 +123,7 @@ const Home = () => {
 
 		setProductDetails({
 			id: product.id,
-			name: product,
+			name: product.name,
 			price: formatINR(quantity * product.price),
 			quantity: quantity
 		});
@@ -163,7 +164,7 @@ const Home = () => {
 			<div className='w-full h-10 text-center flex justify-center align-middle mt-1'>
 				<div className='flex shadow-2xl shadow-gray-500 text-lg'>
 					<input onChange={(e) => { setSearch({ ...search, [e.target.name]: e.target.value }) }} type="search" name="keyword" placeholder='Search' className='flex-1 outline-none border border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300 focus:border-sky-500' />
-					<button onClick={() => { handleSearch() }} className='px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800'>🔍</button>
+					<button onClick={() => { handleSearch() }} className='px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800'><LuSearch/></button>
 				</div>
 			</div>
 			<div className="w-full flex flex-wrap justify-center gap-6 p-2">

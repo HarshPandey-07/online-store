@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../Context/AuthProvider';
 import ControlPanel from './ControlPanel';
+import { LuEllipsisVertical, LuSearch } from "react-icons/lu";
 
 const Products = () => {
     const { user } = useAuth();
@@ -105,7 +106,7 @@ const Products = () => {
             <div className='w-full h-10 text-center flex justify-center align-middle mt-1'>
                 <div className='border border-slate-500 flex focus:border-sky-500 shadow-2xl shadow-gray-500 text-lg'>
                     <input onChange={(e) => { setSearch({ ...search, [e.target.name]: e.target.value }) }} type="search" name="keyword" placeholder='Search' className='flex-1 outline-none border-r border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300' />
-                    <button onClick={() => { handleSearch() }} className='px-2 cursor-pointer transition hover:bg-blue-950 active:bg-sky-800'>🔍</button>
+                    <button onClick={() => { handleSearch() }} className='px-2 cursor-pointer transition hover:bg-blue-950 active:bg-sky-800'><LuSearch/></button>
                 </div>
             </div>
             <div className="w-full flex flex-wrap justify-center gap-6 p-2">
@@ -119,7 +120,7 @@ const Products = () => {
                                         className="h-52 w-64 bg-slate-700 relative flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
                                     >
                                         <div className='absolute top-0 right-0 flex gap-2 p-3'>
-                                            <div onClick={() => { openControl(product) }} className='p-1 h-fit w-8 text-center rounded-full cursor-pointer transition hover:bg-slate-400'>⋮</div>
+                                            <div onClick={() => { openControl(product) }} className='p-1 h-fit w-8 text-center rounded-full cursor-pointer transition hover:bg-slate-400'><LuEllipsisVertical/></div>
                                         </div>
                                         <h2 className="text-lg font-bold mb-2">{product?.name}</h2>
                                         <p className="text-sm text-gray-300">{product?.description}</p>
@@ -136,7 +137,7 @@ const Products = () => {
                                             className="h-52 w-64 bg-slate-700 relative flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
                                         >
                                             <div className='absolute top-0 right-0 flex gap-2 p-3'>
-                                                <div onClick={() => { openControl(product) }} className='p-1 h-fit w-8 text-center rounded-full cursor-pointer transition hover:bg-slate-400'>⋮</div>
+                                                <div onClick={() => { openControl(product) }} className='p-1 h-fit w-8 text-center rounded-full cursor-pointer transition hover:bg-slate-400'><LuEllipsisVertical/></div>
                                             </div>
                                             <h2 className="text-lg font-bold mb-2">{product?.name}</h2>
                                             <p className="text-sm text-gray-300">{product?.description}</p>

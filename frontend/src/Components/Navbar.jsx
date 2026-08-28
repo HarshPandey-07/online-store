@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../Context/AuthProvider'
+import { LuHouse, LuPanelLeft, LuLogIn, LuUserPlus, LuSettings2, LuShoppingCart, LuPackage } from 'react-icons/lu'
 
 const Navbar = ({ setIsSidebarOpen }) => {
 
@@ -12,10 +13,10 @@ const Navbar = ({ setIsSidebarOpen }) => {
         <div
           onClick={() => { setIsSidebarOpen(prev => !prev) }}
           className={
-            `transition-all duration-200 hover:text-slate-400 cursor-e-resize ${user === null || user?.role !== 'admin' ? "hidden" : ""}`
+            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null || user?.role !== 'admin' ? "hidden" : ""}`
           }
         >
-          <span className='tracking-widest text-2xl'>☰</span>
+          <span className='tracking-widest text-2xl'><LuPanelLeft/></span>
         </div>
         <NavLink to={"/"} className="transition-all text-xl duration-200 hover:text-slate-400 cursor-pointer">Store</NavLink>
       </div>
@@ -23,50 +24,50 @@ const Navbar = ({ setIsSidebarOpen }) => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${isActive ? "text-sky-400" : ""}`
+            `flex gap-1 transition-all duration-200 hover:text-slate-400 cursor-pointer ${isActive ? "text-sky-400" : ""}`
           }
         >
-          Home🏡
+          Home <LuHouse className='mt-1'/>
         </NavLink>
         <NavLink
           to="/login"
           className={({ isActive }) =>
-            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user !== null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
+            `flex gap-1 transition-all duration-200 hover:text-slate-400 cursor-pointer ${user !== null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
-          Login
+          Login <LuLogIn className='mt-1'/>
         </NavLink>
         <NavLink
           to="/sign-up"
           className={({ isActive }) =>
-            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user !== null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
+            `flex gap-1 transition-all duration-200 hover:text-slate-400 cursor-pointer ${user !== null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
-          Sign-up
+          Sign-up <LuUserPlus className='mt-1'/>
         </NavLink>
         <NavLink
           to="/user/profile"
           className={({ isActive }) =>
-            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
+            `flex gap-1 transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
-          {user?.username}⚙️
+          {user?.username}<LuSettings2 className='mt-1'/>
         </NavLink>
         <NavLink
           to="/orders"
           className={({ isActive }) =>
-            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
+            `flex gap-1 transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
-          Cart🛒
+          Cart <LuShoppingCart className='mt-1'/>
         </NavLink>
         <NavLink
           to="/orders"
           className={({ isActive }) =>
-            `transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
+            `flex gap-1 transition-all duration-200 hover:text-slate-400 cursor-pointer ${user === null ? "hidden" : ""} ${isActive ? "text-sky-400" : ""}`
           }
         >
-          Orders📦
+          Orders <LuPackage className='mt-1'/>
         </NavLink>
       </div>
     </div>

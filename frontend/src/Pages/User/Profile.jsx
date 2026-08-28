@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../Context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { formatINR } from '../../utils/formatters';
+import { LuLogOut, LuPen, LuUser } from 'react-icons/lu';
 
 const Profile = () => {
 
@@ -77,25 +78,25 @@ const Profile = () => {
                 <div className='p-4 flex-1 bg-[#16171d]'>
                     <div className='flex justify-between align-middle h-1/2 flex-col'>
                         <div>
-                            <p className='text-2xl'>Profile👤</p>
+                            <p className='flex gap-2 text-2xl'>Profile<LuUser/></p>
                         </div>
                         <div className='w-full my-2 border-t border-slate-700'></div>
                         <div className='text-left space-y-2'>
                             <div className='flex'>
                                 <p className='text-xl p-1.5'>{user?.username}</p>
-                                <abbr title="Edit" className='no-underline'><button className='hover:bg-white/40 active:bg-white/20 cursor-pointer p-1.5'>✒️</button></abbr>
+                                <abbr title="Edit" className='no-underline'><button className='hover:bg-white/40 active:bg-white/20 cursor-pointer p-1.5'><LuPen/></button></abbr>
                             </div>
                             <div className='w-full border-t border-sky-400'></div>
                             <div className='flex'>
                                 <p className='text-xl p-1.5'>password</p>
-                                <abbr title="Edit" className='no-underline'><button className='hover:bg-white/40 active:bg-white/20 cursor-pointer p-1.5'>✒️</button></abbr>
+                                <abbr title="Edit" className='no-underline'><button className='hover:bg-white/40 active:bg-white/20 cursor-pointer p-1.5'><LuPen/></button></abbr>
                             </div>
                             <div className='w-full border-t border-sky-400'></div>
                             <div className='flex'>
                                 <p className='text-xl p-1.5'>{user?.email}</p>
-                                <abbr title="Edit" className='no-underline'><button className='hover:bg-white/40 active:bg-white/20 cursor-pointer p-1.5'>✒️</button></abbr>
+                                <abbr title="Edit" className='no-underline'><button className='hover:bg-white/40 active:bg-white/20 cursor-pointer p-1.5'><LuPen/></button></abbr>
                             </div>
-                            <button onClick={handleLogout} className='bg-red-500 h-10 w-20 p-2 text-lg rounded-xl cursor-pointer transition hover:ring-2 active:ring-violet-500 active:bg-rose-800'>Logout</button>
+                            <button onClick={handleLogout} className='flex gap-2 bg-red-500 h-10 w-fit p-2 text-lg rounded-xl cursor-pointer transition hover:ring-2 active:ring-violet-500 active:bg-rose-800'><LuLogOut className='mt-1'/>Logout</button>
                         </div>
                     </div>
                 </div>
