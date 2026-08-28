@@ -8,7 +8,7 @@
 A full-stack online store application built with React and Spring Boot, featuring user authentication, product management, and an admin dashboard.
 
 ### Screenshot 🖼️
-![Screenshot](./frontend/public/Screenshot%20Home_Page.png)
+![Screenshot](./frontend/public/Screenshot-Home_Page.png)
 
 ## Features 💻
 
