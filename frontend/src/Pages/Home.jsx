@@ -164,7 +164,7 @@ const Home = () => {
 			<div className='w-full h-10 text-center flex justify-center align-middle mt-1'>
 				<div className='flex shadow-2xl shadow-gray-500 text-lg'>
 					<input onChange={(e) => { setSearch({ ...search, [e.target.name]: e.target.value }) }} type="search" name="keyword" placeholder='Search' className='flex-1 outline-none border border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300 focus:border-sky-500' />
-					<button onClick={() => { handleSearch() }} className='px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800'><LuSearch/></button>
+					<button onClick={() => { handleSearch() }} className='px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800'><LuSearch /></button>
 				</div>
 			</div>
 			<div className="w-full flex flex-wrap justify-center gap-6 p-2">
@@ -175,66 +175,74 @@ const Home = () => {
 								results.map(product => (
 									<div
 										key={product?.id}
-										className="h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
+										className="min-h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
 									>
 										<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
 										<p className="text-sm text-gray-300">{product?.description}</p>
 										<p className='font-light'>{formatINR(product?.price)}</p>
 										<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
-										<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p>
-										<div className="flex items-center gap-2 mb-2">
-											<button
-												onClick={() =>
-													updateQuantity(
-														product.id,
-														quantities[product.id] - 1,
-														product.stock
-													)
-												}
-												className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-											>
-												-
-											</button>
+										{(product?.stock > 0) ?
+											<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p> :
+											<p className={"pt-4 text-red-400"}>Out Of Stock</p>
+										}
+										{product?.stock > 0 &&
+											<>
+												<div className="flex items-center gap-2 mb-2">
+													<button
+														onClick={() =>
+															updateQuantity(
+																product.id,
+																quantities[product.id] - 1,
+																product.stock
+															)
+														}
+														className="bg-slate-600 px-3 rounded hover:bg-slate-500"
+													>
+														-
+													</button>
 
-											<input
-												type="number"
-												value={quantities[product.id] || 1}
-												min={1}
-												max={product.stock}
-												onChange={(e) =>
-													updateQuantity(
-														product.id,
-														e.target.value,
-														product.stock
-													)
-												}
-												className="w-16 text-center bg-slate-800 rounded outline-none no-spinner"
-											/>
+													<input
+														type="number"
+														value={quantities[product.id] || 1}
+														min={1}
+														max={product.stock}
+														onChange={(e) =>
+															updateQuantity(
+																product.id,
+																e.target.value,
+																product.stock
+															)
+														}
+														className="w-16 text-center bg-slate-800 rounded outline-none no-spinner"
+													/>
 
-											<button
-												onClick={() =>
-													updateQuantity(
-														product.id,
-														quantities[product.id] + 1,
-														product.stock
-													)
-												}
-												className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-											>
-												+
-											</button>
-										</div>
-										<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
-											{disable ? "Processing...." : "Place order"}
-										</button>
+													<button
+														onClick={() =>
+															updateQuantity(
+																product.id,
+																quantities[product.id] + 1,
+																product.stock
+															)
+														}
+														className="bg-slate-600 px-3 rounded hover:bg-slate-500"
+													>
+														+
+													</button>
+												</div>
+												<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
+													{disable ? "Processing...." : "Place order"}
+												</button>
+											</>
+										}
 									</div>
 								))
 								:
 								products.length === 0 ? <i>No products yet!</i> :
 									products.map(product => (
+										product?.stock > 0 && // Ensure 0 stock product won't shown on home page, this may change to make them have an visual indicator that this item is out of stock, but still appear.
 										<div
 											key={product?.id}
-											className="h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
+											className="min-h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
 										>
 											<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
 											<p className="text-sm text-gray-300">{product?.description}</p>

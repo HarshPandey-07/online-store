@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthProvider';
 import { formatINR } from '../../utils/formatters';
 
@@ -11,7 +11,7 @@ const Orders = () => {
     const [page, setPage] = useState(0);
     const [isCompleted, setIsCompleted] = useState({});
 
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const fetchAdminOrder = async () => {
@@ -130,7 +130,7 @@ const Orders = () => {
             setPage(page - 1);
     };
 
-    if (user === null || user?.role !== 'admin') {
+    if (user === null) {
         return (
             <div className='flex flex-col m-20 text-center'>
                 <div className='space-y-5'>

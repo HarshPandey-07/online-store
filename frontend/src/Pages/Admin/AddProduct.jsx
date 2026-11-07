@@ -36,7 +36,7 @@ const AddProduct = () => {
                 }),
                 credentials: 'include'
             });
-            navigate("/user");
+            navigate("/admin/products");
         } catch (error) {
             console.log("Something went wrong", error);
         } finally {
