@@ -83,15 +83,13 @@ public class CartService {
     public CartDto<ResCartItemDto> viewCart(UserPrincipal userPrincipal) {
         Cart cart = cartRepo.findByUser(userPrincipal.getUser());
 
-        if (cart == null || cart.getItems().isEmpty())
-            return null;
-
         CartDto<ResCartItemDto> dto = new CartDto<>();
         List<ResCartItemDto> itemDtoList = new ArrayList<>();
 
         for (CartItem items : cart.getItems()) {
             ResCartItemDto itemDto = new ResCartItemDto();
 
+            itemDto.setProductId(items.getProduct().getId());
             itemDto.setProductName(items.getProduct().getName());
             itemDto.setPrice(items.getProduct().getPrice());
             itemDto.setQuantity(items.getQuantity());

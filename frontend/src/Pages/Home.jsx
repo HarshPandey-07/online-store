@@ -1,6 +1,5 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthProvider';
 import { formatINR } from '../utils/formatters';
 import { LuSearch } from "react-icons/lu";
@@ -22,8 +21,6 @@ const Home = () => {
 	const [search, setSearch] = useState({
 		keyword: ""
 	});
-
-	const navigate = useNavigate();
 
 	const fetchData = async () => {
 		setLoading(true);
@@ -78,23 +75,23 @@ const Home = () => {
 			setPage(page - 1);
 	};
 
-	const handleOrder = async (productId, quantity) => {
+	const handleOrder = async (product, quantity) => {
 		if (user === null) {
 			setDisable(true);
 			console.log("User not logged in");
 			return;
 		}
-
+		
 		setDisable(true);
 
 		try {
-			const res = await fetch('/api/user/order', {
+			const res = await fetch('/api/cart', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					"items": [
 						{
-							"productId": productId,
+							"productId": product.id,
 							"quantity": quantity
 						}
 					]
@@ -107,7 +104,7 @@ const Home = () => {
 				return;
 			}
 
-			console.log(res.text());
+			console.log(await res.text());
 		} catch (error) {
 			console.log("Something went wrong", error);
 		} finally {
@@ -116,19 +113,6 @@ const Home = () => {
 			setProductDetails(null);
 			fetchData();
 		}
-	}
-
-	const handlePlaceOrder = (product, quantity) => {
-		if (disable) return;
-
-		setProductDetails({
-			id: product.id,
-			name: product.name,
-			price: formatINR(quantity * product.price),
-			quantity: quantity
-		});
-
-		setIsProcessing(true);
 	}
 
 	const handleSearch = async () => {
@@ -229,8 +213,8 @@ const Home = () => {
 														+
 													</button>
 												</div>
-												<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
-													{disable ? "Processing...." : "Place order"}
+												<button disabled={disable} onClick={() => { handleOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
+													{disable ? "Processing...." : "Add to cart"}
 												</button>
 											</>
 										}
@@ -291,86 +275,13 @@ const Home = () => {
 													+
 												</button>
 											</div>
-											<button disabled={disable} onClick={() => { handlePlaceOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
-												{disable ? "Processing...." : "Place order"}
+											<button disabled={disable} onClick={() => { handleOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
+												{disable ? "Processing...." : "Add to cart"}
 											</button>
 										</div>
 									))
 				}
 			</div>
-			{
-				isProcessing && (
-					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-						<div className="w-[90%] max-w-md rounded-2xl bg-[#353c5f] p-6 text-white shadow-2xl">
-
-							{
-								user === null ? (
-									<>
-										<p className="text-xl tracking-wide">
-											Please login first!
-										</p>
-
-										<button
-											onClick={() => {
-												setIsProcessing(false);
-												setProductDetails(null);
-											}}
-											className="mt-5 w-full rounded-2xl bg-amber-500 p-2 text-lg cursor-pointer"
-										>
-											Ok
-										</button>
-									</>
-								) : (
-									<>
-										<p className="text-2xl tracking-tight text-rose-400">
-											Order confirmation!
-										</p>
-
-										<p className="mt-4 text-lg text-slate-300">
-											Confirm your order of{" "}
-											<strong className="text-white">
-												{productDetails?.quantity}
-											</strong>{" "}
-											of{" "}
-											<strong className="text-white">
-												{productDetails?.name}
-											</strong>{" "}
-											for{" "}
-											<strong className="text-white">
-												{productDetails?.price}
-											</strong>
-										</p>
-
-										<div className="mt-8 flex gap-3">
-											<button
-												onClick={() =>
-													handleOrder(
-														productDetails.id,
-														productDetails.quantity
-													)
-												}
-												className="w-full rounded-2xl bg-green-500 p-2 text-lg cursor-pointer"
-											>
-												Confirm
-											</button>
-
-											<button
-												onClick={() => {
-													setIsProcessing(false);
-													setProductDetails(null);
-												}}
-												className="w-full rounded-2xl bg-red-500 p-2 text-lg cursor-pointer"
-											>
-												Cancel
-											</button>
-										</div>
-									</>
-								)
-							}
-						</div>
-					</div>
-				)
-			}
 		</div>
 	)
 }

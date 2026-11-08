@@ -6,8 +6,6 @@ import { formatINR, formatNumber } from '../../utils/formatters'
 const Dashboard = () => {
 
     const [order, setOrder] = useState([]);
-    const [pageInfo, setPageInfo] = useState({});
-    const [page, setPage] = useState(0);
     const [isCompleted, setIsCompleted] = useState({});
 
     const [orderStats, setOrderStats] = useState({
@@ -141,17 +139,6 @@ const Dashboard = () => {
             }));
         }
     }
-
-    const pageForward = (e) => {
-        e.preventDefault();
-        if (pageInfo.totalPages > page)
-            setPage(page + 1);
-    };
-    const pageBackward = (e) => {
-        e.preventDefault();
-        if (page !== 0)
-            setPage(page - 1);
-    };
 
     const loadStats = async () => {
         try {

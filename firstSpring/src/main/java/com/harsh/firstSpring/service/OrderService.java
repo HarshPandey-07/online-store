@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class OrderService {
 
     public PageResponse<ResOrderDTO> getOrders(UserPrincipal reqUser, int page, int size) {
         User user = reqUser.getUser();
-        PageRequest pageable = PageRequest.of(page, size);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Order> order = orderRepo.findAllByUser(user, pageable);
 
         return mapper.toPageDto(order);
@@ -137,7 +138,7 @@ public class OrderService {
     }
 
     public PageResponse<ResOrderDTO> getOrdersAdmin(int page, int size) {
-        PageRequest pageable = PageRequest.of(page, size);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Order> order = orderRepo.findAll(pageable);
 
         return mapper.toPageDto(order);
