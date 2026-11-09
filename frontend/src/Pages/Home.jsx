@@ -1,289 +1,147 @@
-import React from 'react'
 import { useState, useEffect } from 'react';
-import { useAuth } from '../Context/AuthProvider';
-import { formatINR } from '../utils/formatters';
-import { LuSearch } from "react-icons/lu";
+import { LuSearch } from 'react-icons/lu';
+import ProductCard from '../Components/ProductCard';
 
 const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [quantities, setQuantities] = useState({});
+  const [pageInfo, setPageInfo] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [results, setResults] = useState([]);
+  const [search, setSearch] = useState('');
 
-	const { user } = useAuth();
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/product?page=${page}&size=10`);
+        if (res.ok) {
+          const data = await res.json();
 
-	const [products, setProducts] = useState([]);
-	const [quantities, setQuantities] = useState({});
-	const [pageInfo, setPageInfo] = useState({});
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
-	const [page, setPage] = useState(0);
-	const [disable, setDisable] = useState(false);
-	const [isProcessing, setIsProcessing] = useState(false);
-	const [productDetails, setProductDetails] = useState(null);
-	const [results, setResults] = useState([]);
-	const [search, setSearch] = useState({
-		keyword: ""
-	});
+          const initialQty = {};
+          data.content.forEach((product) => {
+            initialQty[product.id] = 1;
+          });
 
-	const fetchData = async () => {
-		setLoading(true);
-		try {
-			const res = await fetch(`/api/product?page=${page}&size=10`);
-			if (res.ok) {
-				const data = await res.json();
+          setQuantities(initialQty);
 
-				const initialQty = {};
-				data.content.forEach(product => {
-					initialQty[product.id] = 1;
-				});
+          setProducts(data.content);
+          setPageInfo({
+            page: data.page,
+            size: data.size,
+            totalElements: data.totalElements,
+            totalPages: data.totalPages,
+          });
+        }
+      } catch (error) {
+        setError('Something went wrong');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-				setQuantities(initialQty);
+    fetchData();
+  }, [page]);
 
-				setProducts(data.content);
-				setPageInfo({
-					page: data.page,
-					size: data.size,
-					totalElements: data.totalElements,
-					totalPages: data.totalPages
-				})
-			}
-		} catch (error) {
-			setError("Something went wrong");
-		} finally {
-			setLoading(false);
-		}
-	};
+  const pageForward = (e) => {
+    if (pageInfo.totalPages > page) setPage(page + 1);
+  };
+  const pageBackward = (e) => {
+    if (page !== 0) setPage(page - 1);
+  };
 
-	useEffect(() => {
-		fetchData();
-	}, [page]);
+  const handleSearch = async () => {
+    if (!search.trim()) return;
 
-	const updateQuantity = (productId, value, stock) => {
-		const qty = Math.max(1, Math.min(stock, Number(value)));
+    try {
+      const res = await fetch(`/api/product/search?keyword=${search}`);
+      if (!res.ok) {
+        console.log('Something went wrong: ', res.statusText);
+        return;
+      }
+      const data = await res.json();
 
-		setQuantities(prev => ({
-			...prev,
-			[productId]: qty
-		}));
-	};
+      setResults(data);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
 
-	const pageForward = (e) => {
-		e.preventDefault();
-		if (pageInfo.totalPages > page)
-			setPage(page + 1);
-	};
-	const pageBackward = (e) => {
-		e.preventDefault();
-		if (page !== 0)
-			setPage(page - 1);
-	};
+  return (
+    <div className={`md:mx-12 min-h-[calc(100dvh-86px)] border-x bg-[#1c1e29] border-slate-700`}>
+      {/* Pagination */}
+      {!pageInfo || Object.keys(pageInfo).length === 0 ? (
+        <i>No items</i>
+      ) : (
+        <div className="h-fit w-full bg-black border-b border-b-slate-700 p-1 pl-2 flex justify-between">
+          <p>
+            {pageInfo.page + 1}-{pageInfo.totalPages} of {pageInfo.totalElements} results, and size
+            of {pageInfo.size}
+          </p>
+          <div>
+            <button
+              onClick={pageBackward}
+              className={`h-fit w-fit px-4 tracking-wider text-blue-500 cursor-pointer hover:underline ${page === 0 ? 'hidden' : ''}`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={pageForward}
+              className={`h-fit w-fit px-4 tracking-wider text-blue-500 cursor-pointer hover:underline ${pageInfo.totalPages === page + 1 ? 'hidden' : ''}`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Search */}
+      <div className="w-full h-10 text-center flex justify-center align-middle mt-1">
+        <div className="flex shadow-2xl shadow-gray-500 text-lg">
+          <input
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            type="search"
+            name="search"
+            placeholder="Search"
+            className="flex-1 outline-none border border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300 focus:border-sky-500"
+          />
+          <button
+            onClick={() => {
+              handleSearch();
+            }}
+            className="px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800"
+          >
+            <LuSearch />
+          </button>
+        </div>
+      </div>
+      {/* Products (HomePage and Search) */}
+      <div className="w-full flex flex-wrap justify-center gap-6 p-2">
+        {loading ? (
+          <div className="loader"></div>
+        ) : error ? (
+          <p>{error}</p>
+        ) : results.length !== 0 ? (
+          <ProductCard
+            products={results}
+            quantities={quantities}
+            setQuantities={setQuantities}
+            isResult={true}
+          />
+        ) : (
+          <ProductCard
+            products={products}
+            quantities={quantities}
+            setQuantities={setQuantities}
+            isResult={false}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
 
-	const handleOrder = async (product, quantity) => {
-		if (user === null) {
-			setDisable(true);
-			console.log("User not logged in");
-			return;
-		}
-		
-		setDisable(true);
-
-		try {
-			const res = await fetch('/api/cart', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					"items": [
-						{
-							"productId": product.id,
-							"quantity": quantity
-						}
-					]
-				}),
-				credentials: 'include'
-			})
-
-			if (!res.ok) {
-				console.log("Something went worng while sending order", res.status, res.statusText);
-				return;
-			}
-
-			console.log(await res.text());
-		} catch (error) {
-			console.log("Something went wrong", error);
-		} finally {
-			setDisable(false);
-			setIsProcessing(false);
-			setProductDetails(null);
-			fetchData();
-		}
-	}
-
-	const handleSearch = async () => {
-		if (search.keyword === null || search.keyword === "")
-			return;
-
-		try {
-			const res = await fetch(`/api/product/search?keyword=${search.keyword}`);
-			if (!res.ok) {
-				console.log("Something went wrong: ", res.statusText);
-				return;
-			}
-			const data = await res.json();
-
-			setResults(data);
-		} catch (error) {
-			console.log("Error: ", error);
-		}
-	}
-
-	return (
-		<div className={`md:mx-12 min-h-[calc(100dvh-86px)] border-x bg-[#1c1e29] border-slate-700`}>
-			{
-				!pageInfo || Object.keys(pageInfo).length === 0 ? <i>No items</i> :
-					<div className='h-fit w-full bg-black border-b border-b-slate-700 p-1 pl-2 flex justify-between'>
-						<p>{pageInfo.page + 1}-{pageInfo.totalPages} of {pageInfo.totalElements} results, and size of {pageInfo.size}</p>
-						<div>
-							<button onClick={pageBackward} className={`h-fit w-fit px-4 tracking-wider text-blue-500 cursor-pointer hover:underline ${page === 0 ? "hidden" : ""}`}>Previous</button>
-							<button onClick={pageForward} className={`h-fit w-fit px-4 tracking-wider text-blue-500 cursor-pointer hover:underline ${pageInfo.totalPages === page + 1 ? "hidden" : ""}`}>Next</button>
-						</div>
-					</div>
-			}
-			<div className='w-full h-10 text-center flex justify-center align-middle mt-1'>
-				<div className='flex shadow-2xl shadow-gray-500 text-lg'>
-					<input onChange={(e) => { setSearch({ ...search, [e.target.name]: e.target.value }) }} type="search" name="keyword" placeholder='Search' className='flex-1 outline-none border border-slate-500 text-slate-200 py-0.5 px-2 caret-sky-300 focus:border-sky-500' />
-					<button onClick={() => { handleSearch() }} className='px-2 cursor-pointer border-y border-r border-slate-500 transition hover:bg-blue-950 active:bg-sky-800'><LuSearch /></button>
-				</div>
-			</div>
-			<div className="w-full flex flex-wrap justify-center gap-6 p-2">
-				{
-					loading ? <div className='loader'></div> :
-						error ? <p>{error}</p> :
-							results.length !== 0 ?
-								results.map(product => (
-									<div
-										key={product?.id}
-										className="min-h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
-									>
-										<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
-										<p className="text-sm text-gray-300">{product?.description}</p>
-										<p className='font-light'>{formatINR(product?.price)}</p>
-										<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
-										{(product?.stock > 0) ?
-											<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p> :
-											<p className={"pt-4 text-red-400"}>Out Of Stock</p>
-										}
-										{product?.stock > 0 &&
-											<>
-												<div className="flex items-center gap-2 mb-2">
-													<button
-														onClick={() =>
-															updateQuantity(
-																product.id,
-																quantities[product.id] - 1,
-																product.stock
-															)
-														}
-														className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-													>
-														-
-													</button>
-
-													<input
-														type="number"
-														value={quantities[product.id] || 1}
-														min={1}
-														max={product.stock}
-														onChange={(e) =>
-															updateQuantity(
-																product.id,
-																e.target.value,
-																product.stock
-															)
-														}
-														className="w-16 text-center bg-slate-800 rounded outline-none no-spinner"
-													/>
-
-													<button
-														onClick={() =>
-															updateQuantity(
-																product.id,
-																quantities[product.id] + 1,
-																product.stock
-															)
-														}
-														className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-													>
-														+
-													</button>
-												</div>
-												<button disabled={disable} onClick={() => { handleOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
-													{disable ? "Processing...." : "Add to cart"}
-												</button>
-											</>
-										}
-									</div>
-								))
-								:
-								products.length === 0 ? <i>No products yet!</i> :
-									products.map(product => (
-										product?.stock > 0 && // Ensure 0 stock product won't shown on home page, this may change to make them have an visual indicator that this item is out of stock, but still appear.
-										<div
-											key={product?.id}
-											className="min-h-52 w-64 bg-slate-700 flex flex-col justify-end text-white rounded-xl shadow-lg p-4"
-										>
-											<h2 className="text-lg font-bold mb-2">{product?.name}</h2>
-											<p className="text-sm text-gray-300">{product?.description}</p>
-											<p className='font-light'>{formatINR(product?.price)}</p>
-											<p className='text-xs text-gray-400'>Category: {product?.categoryName}</p>
-											<p className={`text-xs font-extralight' ${(product?.stock < 25) ? "text-red-400" : "text-green-400"}`}>{product?.stock}</p>
-											<div className="flex items-center gap-2 mb-2">
-												<button
-													onClick={() =>
-														updateQuantity(
-															product.id,
-															quantities[product.id] - 1,
-															product.stock
-														)
-													}
-													className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-												>
-													-
-												</button>
-
-												<input
-													type="number"
-													value={quantities[product.id] || 1}
-													min={1}
-													max={product.stock}
-													onChange={(e) =>
-														updateQuantity(
-															product.id,
-															e.target.value,
-															product.stock
-														)
-													}
-													className="w-16 text-center bg-slate-800 rounded outline-none no-spinner"
-												/>
-
-												<button
-													onClick={() =>
-														updateQuantity(
-															product.id,
-															quantities[product.id] + 1,
-															product.stock
-														)
-													}
-													className="bg-slate-600 px-3 rounded hover:bg-slate-500"
-												>
-													+
-												</button>
-											</div>
-											<button disabled={disable} onClick={() => { handleOrder(product, quantities[product.id]) }} className='bg-sky-700 rounded cursor-pointer active:bg-sky-800 disabled:grayscale transition hover:-translate-0.5 disabled:translate-0'>
-												{disable ? "Processing...." : "Add to cart"}
-											</button>
-										</div>
-									))
-				}
-			</div>
-		</div>
-	)
-}
-
-export default Home
+export default Home;
