@@ -5,20 +5,26 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.5</version>
+		<version>4.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.harsh</groupId>
 	<artifactId>firstSpring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
+	<name>Online Store</name>
+	<description>A online store where admin can manage inventory, manage orders, and can watch over all of the activities through the dashboard</description>
+	<url>https://github.com/HarshPandey-07/online-store</url>
 	<licenses>
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<name>Harsh Pandey</name>
+			<email>harsh.p.codes@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
