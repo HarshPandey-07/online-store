@@ -7,4 +7,5 @@ import com.harsh.firstSpring.entity.Category;
 
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Integer> {
+    Boolean existsByName(String name);
 }

@@ -64,10 +64,7 @@ A full-stack online store application built with React and Spring Boot, featurin
 ### Database configuration
 1. Create a database. example `online_store`.
 2. Configure db credentials in `application.properties`.
-3. Run the Spring Boot application once to automatically  create the required database tables.
-4. Execute `firstSpring/src/main/resources/db/seed.sql` to populate the database with *(required)* default roles, *(required)* categories, and *(optinal)* sample products.
-
-> Note: The application requires the USER and ADMIN roles  to be present in the database for role-based authorization.
+3. Run the Spring Boot application once to automatically create the required database tables, roles, categories and an admin account as configured in application.properties.
 
 ### Frontend 
 ```bash
