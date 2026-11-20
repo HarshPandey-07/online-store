@@ -36,7 +36,7 @@ const Home = () => {
           });
         }
       } catch (error) {
-        setError('Something went wrong');
+        setError(`Something went wrong ${error}`);
       } finally {
         setLoading(false);
       }
@@ -45,10 +45,10 @@ const Home = () => {
     fetchData();
   }, [page]);
 
-  const pageForward = (e) => {
+  const pageForward = () => {
     if (pageInfo.totalPages > page) setPage(page + 1);
   };
-  const pageBackward = (e) => {
+  const pageBackward = () => {
     if (page !== 0) setPage(page - 1);
   };
 
