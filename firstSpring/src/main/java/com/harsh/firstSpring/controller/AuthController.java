@@ -6,6 +6,7 @@ import com.harsh.firstSpring.model.user.update.ChangeEmailDTO;
 import com.harsh.firstSpring.model.user.update.ChangePasswordDTO;
 import com.harsh.firstSpring.model.user.update.ChangeUsernameDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +32,13 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public String signUp(@RequestBody UserDTO dto) {
-        return authService.signUp(dto);
+    public ResponseEntity<?> signUp(@RequestBody UserDTO dto) {
+        return ResponseEntity.ok(authService.signUp(dto));
     }
 
     @PostMapping("/admin/update-role")
-    public String updateRole(@RequestBody UserUpdateDTO user) {
-        return authService.changeRole(user);
+    public ResponseEntity<?> updateRole(@RequestBody UserUpdateDTO user) {
+        return ResponseEntity.ok(authService.changeRole(user));
     }
 
     @PostMapping("/user/change-username")
@@ -46,8 +47,8 @@ public class AuthController {
     }
 
     @PostMapping("/user/change-email")
-    public String updateEmail(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody ChangeEmailDTO dto) {
-        return authService.changeEmail(userPrincipal, dto);
+    public ResponseEntity<?> updateEmail(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody ChangeEmailDTO dto) {
+        return ResponseEntity.ok(authService.changeEmail(userPrincipal, dto));
     }
 
     @PostMapping("/user/change-password")

@@ -1,5 +1,8 @@
 package com.harsh.firstSpring.service;
 
+import com.harsh.firstSpring.exception.RoleNotFoundException;
+import com.harsh.firstSpring.exception.UserAlreadyExistsException;
+import com.harsh.firstSpring.exception.UserNotFoundException;
 import com.harsh.firstSpring.model.*;
 import com.harsh.firstSpring.model.user.*;
 import com.harsh.firstSpring.model.user.update.ChangeEmailDTO;
@@ -37,23 +40,29 @@ public class AuthService {
     }
 
     @Transactional
-    public String signUp(UserDTO dto) {
-        User entity = new User();
-        String password = passwordEncoder.encode(dto.getPassword());
-        Role role = roleRepo.findByName("ROLE_USER")
-            .orElseThrow(() -> new RuntimeException("Cannot get role"));
-
+    public UserResDTO signUp(UserDTO dto) {
         if(userRepo.existsByEmail(dto.getEmail()))
-            return "User already exists";
+            throw new UserAlreadyExistsException(dto.getEmail() + ": already exists!");
 
+        Role role = roleRepo.findByName("ROLE_USER")
+            .orElseThrow(() -> new RoleNotFoundException("Cannot get role: ROLE_USER!"));
+
+        User entity = new User();
         entity.setUsername(dto.getUsername());
-        entity.setPassword(password);
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         entity.setEmail(dto.getEmail());
         entity.setRole(role);
 
-        userRepo.save(entity);
-        return "Sign successful!";
+        User savedUser = userRepo.save(entity);
+        var returnUser = new UserResDTO();
+
+        returnUser.setUsername(savedUser.getUsername());
+        returnUser.setEmail(savedUser.getEmail());
+        returnUser.setRole(savedUser.getRole().getName());
+
+        return returnUser;
     }
+
     @Transactional
     public String login(LoginDTO dto, HttpServletRequest request) {
         Authentication auth = authManger.authenticate(
@@ -85,17 +94,23 @@ public class AuthService {
     }
 
     @Transactional
-    public String changeRole(UserUpdateDTO userDTO) {
+    public UserResDTO changeRole(UserUpdateDTO userDTO) {
         User user = userRepo.findByUsername(userDTO.getUsername());
 
         if(user == null)
-            return "Cannot find user!";
+            throw new UserNotFoundException("Cannot find user!");
 
         Role role = roleRepo.findById(userDTO.getRoleId())
-                .orElseThrow(() -> new RuntimeException("Cannot find role!"));
+                .orElseThrow(() -> new RoleNotFoundException("Cannot find role!"));
 
         user.setRole(role);
-        return "Role updated!";
+
+        UserResDTO response = new UserResDTO();
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+        response.setRole(role.getName());
+
+        return response;
     }
 
     @Transactional
@@ -109,16 +124,23 @@ public class AuthService {
     }
 
     @Transactional
-    public String changeEmail(UserPrincipal userPrincipal, ChangeEmailDTO dto) {
+    public UserResDTO changeEmail(UserPrincipal userPrincipal, ChangeEmailDTO dto) {
         User entity = userPrincipal.getUser();
 
+        if (dto.getEmail() == null || dto.getEmail().isBlank())
+            throw new IllegalArgumentException("Email cannot be empty");
+
         if(userRepo.existsByEmailAndIdNot(dto.getEmail(), entity.getId()))
-            return "Email is already taken by other user";
+            throw new UserAlreadyExistsException("Email is already taken");
 
-        if(dto.getEmail() != null && !dto.getEmail().isBlank())
-            entity.setEmail(dto.getEmail());
+        entity.setEmail(dto.getEmail());
 
-        return "Email changed!";
+        UserResDTO response = new UserResDTO();
+        response.setUsername(entity.getUsername());
+        response.setEmail(entity.getEmail());
+        response.setRole(entity.getRole().getName());
+
+        return response;
     }
 
     @Transactional
