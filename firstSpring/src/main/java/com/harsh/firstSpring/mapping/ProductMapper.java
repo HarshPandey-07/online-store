@@ -9,7 +9,7 @@ import com.harsh.firstSpring.model.product.ResponseProductDTO;
 
 @Component
 public class ProductMapper {
-    
+
     public Product toEntity(RequestProductDTO dto, Category category) {
         Product entity = new Product();
         entity.setName(dto.getName());

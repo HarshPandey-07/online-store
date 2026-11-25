@@ -44,7 +44,7 @@ public class ProductServiceImp implements ProductService {
         productRepo.save(mapper.toEntity(dto, category));
         return "Data saved!";
     }
-    
+
     @Override
     public PageResponse<ResponseProductDTO> viewProducts(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
@@ -79,7 +79,7 @@ public class ProductServiceImp implements ProductService {
         productRepo.delete(productEntity);
         return "Deleted successfully";
     }
-    
+
     @Transactional
     @Override
     public ResponseProductDTO updateProduct(int id, RequestProductDTO dto) {
