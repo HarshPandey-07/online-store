@@ -7,6 +7,7 @@ import com.harsh.firstSpring.model.order.ReqOrderDTO;
 import com.harsh.firstSpring.model.order.ResOrderDTO;
 import com.harsh.firstSpring.model.user.UserPrincipal;
 import com.harsh.firstSpring.service.OrderService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,8 +69,8 @@ public class OrderController {
     }
 
     @GetMapping("/user/last-order")
-    public ResOrderDTO getLastOrder(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        return orderService.getUserLastOrder(userPrincipal);
+    public ResponseEntity<?> getLastOrder(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(orderService.getUserLastOrder(userPrincipal));
     }
 
     @GetMapping("/admin/order/stats")

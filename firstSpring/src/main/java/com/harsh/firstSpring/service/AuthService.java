@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
-
 import com.harsh.firstSpring.entity.Role;
 import com.harsh.firstSpring.entity.User;
 import com.harsh.firstSpring.repository.RoleRepo;
@@ -41,11 +41,11 @@ public class AuthService {
 
     @Transactional
     public UserResDTO signUp(UserDTO dto) {
-        if(userRepo.existsByEmail(dto.getEmail()))
+        if (userRepo.existsByEmail(dto.getEmail()))
             throw new UserAlreadyExistsException(dto.getEmail() + ": already exists!");
 
         Role role = roleRepo.findByName("ROLE_USER")
-            .orElseThrow(() -> new RoleNotFoundException("Cannot get role: ROLE_USER!"));
+                .orElseThrow(() -> new RoleNotFoundException("Cannot get role: ROLE_USER!"));
 
         User entity = new User();
         entity.setUsername(dto.getUsername());
@@ -64,7 +64,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String login(LoginDTO dto, HttpServletRequest request) {
+    public UserResDTO login(LoginDTO dto, HttpServletRequest request) {
         Authentication auth = authManger.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         dto.getUsername(),
@@ -77,13 +77,27 @@ public class AuthService {
                         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                         SecurityContextHolder.getContext()
                 );
-        return "Login successful!";
+
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+
+        String role = auth.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .map(authority -> authority.replace("ROLE_", "").toLowerCase())
+                .orElse("user");
+
+        UserResDTO response = new UserResDTO();
+        response.setUsername(dto.getUsername());
+        response.setEmail(userPrincipal.getEmail());
+        response.setRole(role);
+
+        return response;
     }
 
     public UserResDTO sendUser(UserPrincipal userPrincipal) {
         UserResDTO res = new UserResDTO();
 
-        if(userPrincipal == null) {
+        if (userPrincipal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
@@ -97,7 +111,7 @@ public class AuthService {
     public UserResDTO changeRole(UserUpdateDTO userDTO) {
         User user = userRepo.findByUsername(userDTO.getUsername());
 
-        if(user == null)
+        if (user == null)
             throw new UserNotFoundException("Cannot find user!");
 
         Role role = roleRepo.findById(userDTO.getRoleId())
@@ -117,7 +131,7 @@ public class AuthService {
     public String changeUsername(UserPrincipal userPrincipal, ChangeUsernameDTO dto) {
         User entity = userPrincipal.getUser();
 
-        if(dto.getUsername() != null && !dto.getUsername().isBlank())
+        if (dto.getUsername() != null && !dto.getUsername().isBlank())
             entity.setUsername(dto.getUsername());
 
         return "Username changed!"; // Because of transactional it's auto persisted
@@ -130,7 +144,7 @@ public class AuthService {
         if (dto.getEmail() == null || dto.getEmail().isBlank())
             throw new IllegalArgumentException("Email cannot be empty");
 
-        if(userRepo.existsByEmailAndIdNot(dto.getEmail(), entity.getId()))
+        if (userRepo.existsByEmailAndIdNot(dto.getEmail(), entity.getId()))
             throw new UserAlreadyExistsException("Email is already taken");
 
         entity.setEmail(dto.getEmail());
@@ -147,7 +161,7 @@ public class AuthService {
     public String changePassword(UserPrincipal userPrincipal, ChangePasswordDTO dto) {
         User entity = userPrincipal.getUser();
 
-        if(!passwordEncoder.matches(dto.getOldPassword(), entity.getPassword()))
+        if (!passwordEncoder.matches(dto.getOldPassword(), entity.getPassword()))
             return "Incorrect old password!";
 
         entity.setPassword(passwordEncoder.encode(dto.getNewPassword()));

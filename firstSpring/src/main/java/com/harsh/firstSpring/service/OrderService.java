@@ -4,7 +4,6 @@ import com.harsh.firstSpring.entity.*;
 import com.harsh.firstSpring.mapping.OrderMapper;
 import com.harsh.firstSpring.model.*;
 import com.harsh.firstSpring.model.order.*;
-import com.harsh.firstSpring.model.order.ResUserOrderDTO;
 import com.harsh.firstSpring.model.user.UserPrincipal;
 import com.harsh.firstSpring.repository.CartRepo;
 import com.harsh.firstSpring.repository.OrderRepo;
@@ -171,17 +170,14 @@ public class OrderService {
     @Transactional
     public ResOrderDTO getUserLastOrder(UserPrincipal userPrincipal) {
         Integer userId = userPrincipal.getUser().getId();
-        Order order = orderRepo.findTopByUserIdOrderByCreatedAtDesc(userId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        ResUserOrderDTO userDto = new ResUserOrderDTO();
-        userDto.setUsername(order.getUser().getUsername());
-
-        ResOrderDTO dto = new ResOrderDTO();
-
-        mapper.mapResponseOrderDto(order, dto);
-
-        return dto;
+        return orderRepo.findTopByUserIdOrderByCreatedAtDesc(userId)
+                .map((order) -> {
+                    ResOrderDTO dto = new ResOrderDTO();
+                    mapper.mapResponseOrderDto(order, dto);
+                    return dto;
+                })
+                .orElse(new ResOrderDTO());
     }
 
     @Transactional

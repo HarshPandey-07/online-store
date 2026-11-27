@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../Context/AuthProvider';
-import { useNavigate } from 'react-router-dom';
-import { formatINR } from '../../utils/formatters';
-import { LuLogOut, LuPen, LuUser } from 'react-icons/lu';
+import {useEffect, useState} from 'react'
+import {useAuth} from '../../Context/AuthProvider';
+import {useNavigate} from 'react-router-dom';
+import {formatINR} from '../../utils/formatters';
+import {LuLogOut, LuPen, LuUser} from 'react-icons/lu';
 
 const Profile = () => {
 
@@ -27,23 +27,21 @@ const Profile = () => {
         }
     };
 
-    const fetchLastOrder = async () => {
-        try {
-            const res = await fetch(`/api/user/last-order`, {
-                credentials: 'include'
-            });
-            if (!res.ok) {
-                console.log("Something went wrong");
-                return;
-            }
-            const data = await res.json();
-            setOrder(data);
-        } catch (error) {
-            console.log("Something went wrong: ", error);
-        }
-    };
-
     useEffect(() => {
+        const fetchLastOrder = async () => {
+            try {
+                const res = await fetch(`/api/user/last-order`, {
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+                if (data.orderItems !== null) setOrder(data);
+
+            } catch (error) {
+                console.log(`Something went wrong: ${error}`);
+            }
+        };
+
         fetchLastOrder();
     }, [order]);
 
@@ -53,12 +51,11 @@ const Profile = () => {
 
         if (isNaN(dateObj)) return "Invalid date";
 
-        const displayDate = dateObj.toLocaleDateString('en-IN', {
+        return dateObj.toLocaleDateString('en-IN', {
             month: 'long',
             day: 'numeric',
             year: 'numeric'
         });
-        return displayDate;
     };
 
     if (user === null) {

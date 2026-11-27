@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 const AuthContext = createContext();
 
@@ -6,24 +6,24 @@ const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
 
-    const fetchUser = async () => {
-        try {
-            const res = await fetch('/api/auth/me', {
-                credentials: 'include'
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                setUser(data);
-            } else {
-                setUser(null);
-            }
-        } catch (error) {
-            console.log("Something went wrong");
-        }
-    };
-
     useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch('/api/auth/me', {
+                    credentials: 'include'
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.log(`Something went wrong ${error}`);
+            }
+        };
+
       fetchUser();
     }, []);
     
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext value={{ user, login, logout, fetchUser }}>
+        <AuthContext value={{ user, setUser, login, logout }}>
             {children}
         </AuthContext>
     )

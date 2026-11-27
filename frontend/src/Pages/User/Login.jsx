@@ -4,14 +4,14 @@ import { useAuth } from '../../Context/AuthProvider';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 
 const Login = () => {
-  const { fetchUser } = useAuth();
+  const { setUser } = useAuth();
 
   const [userData, setUserData] = useState({
     username: '',
     password: '',
   });
 
-  const [response, setResponse] = useState();
+  const [response, setResponse] = useState('');
   const [disable, setDisable] = useState(false);
   const [eye, setEye] = useState(false);
   const navigate = useNavigate();
@@ -30,10 +30,10 @@ const Login = () => {
         body: JSON.stringify(userData),
         credentials: 'include',
       });
-      const res = await req.text();
+      const res = await req.json();
       if (req.ok) {
-        setResponse(res);
-        fetchUser();
+        setResponse('Login successful');
+        setUser(res);
         navigate('/');
       } else {
         setResponse('Login failed');
